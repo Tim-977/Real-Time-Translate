@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, EqualTo
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     username = StringField('Login', validators=[DataRequired()])
     password_1 = PasswordField('Create Password', validators=[DataRequired()])
-    password_2 = PasswordField('Repeat the Password', validators=[DataRequired()])
+    password_2 = PasswordField('Repeat the Password', validators=[DataRequired(), EqualTo('password_1', message='Passwords must match')])
     submit = SubmitField('Enter')
 
 
@@ -47,7 +47,10 @@ def register():
         password_2 = request.form['password_2']
         print(username, password_1, password_2)
         return redirect('/success')
+    elif request.method == 'POST':
+        flash('Please correct the errors below.')
     return render_template('register.html', title='Авторизация', form=form)
+
 
 @app.route('/success')
 def success():
