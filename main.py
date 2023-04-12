@@ -34,7 +34,7 @@ def login():
         password = request.form['password']
         print(username, password)
         return redirect('/success')
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Authorisation', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -49,7 +49,7 @@ def register():
         return redirect('/success')
     elif request.method == 'POST':
         flash('Please correct the errors below.')
-    return render_template('register.html', title='Авторизация', form=form)
+    return render_template('register.html', title='Authorisation', form=form)
 
 
 @app.route('/success')
