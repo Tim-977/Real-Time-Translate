@@ -1,7 +1,10 @@
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, flash, redirect, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
+
+from data import db_session
+from data.users import User
 
 app = Flask(__name__)
 
@@ -22,7 +25,7 @@ class RegisterForm(FlaskForm):
 
 @app.route('/')
 def start():
-    return redirect('/login')
+    return redirect('/register')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -45,10 +48,21 @@ def register():
         username = request.form['username']
         password_1 = request.form['password_1']
         password_2 = request.form['password_2']
-        print(username, password_1, password_2)
+        db_session.global_init("db/blogs.db")
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.name == username).all():
+            return render_template('register.html', title='AAAA', form=form, message="Такой пользователь уже есть")
+        # <--------db-------->
+        user = User()
+        user.name = username
+        user.password = password_1
+        db_sess.add(user)
+        db_sess.commit()
+        # <--------db-------->
+        #print(username, password_1, password_2)
         return redirect('/success')
-    elif request.method == 'POST':
-        flash('Please correct the errors below.')
+    #elif request.method == 'POST':
+    #    flash('Please correct the errors below.')
     return render_template('register.html', title='Authorisation', form=form)
 
 
