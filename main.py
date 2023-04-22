@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request
+from flask import Flask, flash, redirect, render_template, request, make_response, session
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
@@ -27,6 +27,13 @@ class RegisterForm(FlaskForm):
 def start():
     return redirect('/register')
 
+@app.route("/session_test")
+def session_test():
+    visits_count = session.get('visits_count', 0)
+    session['visits_count'] = visits_count + 1
+    return make_response(
+        f"Вы пришли на эту страницу {visits_count + 1} раз")
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global username
@@ -51,6 +58,7 @@ def register():
         db_session.global_init("db/blogs.db")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.name == username).all():
+            print(f'User already exists: {username}')
             return render_template('register.html', title='AAAA', form=form, message="Такой пользователь уже есть")
         # <--------db-------->
         user = User()
