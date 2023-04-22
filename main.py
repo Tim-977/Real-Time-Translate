@@ -6,21 +6,24 @@ from wtforms.validators import DataRequired, EqualTo
 from data import db_session
 from data.users import User
 
+# TODO:
+# ~~ Separate authorisation redirection (login after authorisation)
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Login', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Enter')
+    submit = SubmitField('Log in')
 
 class RegisterForm(FlaskForm):
-    username = StringField('Login', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     password_1 = PasswordField('Create Password', validators=[DataRequired()])
     password_2 = PasswordField('Repeat the Password', validators=[DataRequired(), EqualTo('password_1', message='Passwords must match')])
-    submit = SubmitField('Enter')
+    submit = SubmitField('Register')
 
 
 @app.route('/')
@@ -31,8 +34,7 @@ def start():
 def session_test():
     visits_count = session.get('visits_count', 0)
     session['visits_count'] = visits_count + 1
-    return make_response(
-        f"Вы пришли на эту страницу {visits_count + 1} раз")
+    return make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -42,7 +44,20 @@ def login():
     if form.validate_on_submit():
         username = request.form['username']
         password = request.form['password']
-        print(username, password)
+        # <user--check>
+        db_session.global_init("db/blogs.db")
+        db_sess = db_session.create_session()
+        #if db_sess.query(User).filter(User.name == username).all():
+        #    print(f'User already exists: {username}')
+        #    return render_template('login.html', title='Login Failed', form=form, message="Неверный пароль")
+        user = db_sess.query(User).filter(User.name == username).first()
+        if user and user.password == password:
+            # login successful
+            return redirect('/success')
+        else:
+            # login failed
+            return render_template('login.html', title='Login Failed', form=form, message="Неверный логин или пароль")
+        # </user--check>
         return redirect('/success')
     return render_template('login.html', title='Authorisation', form=form)
 
@@ -59,7 +74,7 @@ def register():
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.name == username).all():
             print(f'User already exists: {username}')
-            return render_template('register.html', title='AAAA', form=form, message="Такой пользователь уже есть")
+            return render_template('register.html', title='Registration failed', form=form, message="Такой пользователь уже есть")
         # <--------db-------->
         user = User()
         user.name = username
