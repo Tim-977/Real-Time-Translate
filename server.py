@@ -7,8 +7,8 @@ from wtforms.validators import DataRequired, EqualTo
 from data import db_session
 from data.users import User
 
-# TODO:
-# ~~ Separate authorisation redirection (login after authorisation)
+# FIXME:
+# ~~ Translator can't translate digits
 
 app = Flask(__name__)
 
