@@ -1,4 +1,5 @@
-from flask import Flask, flash, redirect, render_template, request, make_response, session
+from deep_translator import GoogleTranslator
+from flask import Flask, flash, make_response, redirect, render_template, request, session
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
@@ -28,7 +29,7 @@ class RegisterForm(FlaskForm):
 
 @app.route('/')
 def start():
-    return redirect('/register')
+    return redirect('/login')
 
 @app.route("/session_test")
 def session_test():
@@ -89,10 +90,19 @@ def register():
     return render_template('register.html', title='Authorisation', form=form)
 
 
-@app.route('/success')
-def success():
-    return render_template('success.html', username=username)
+#@app.route('/success')
+#def success():
+#    return render_template('success.html', username=username)
 
+@app.route('/success', methods=['GET', 'POST'])
+def translate():
+    if request.method == 'POST':
+        text = request.form['text']
+        #translated_text = text[::-1]
+        translated_text = GoogleTranslator(source='auto', target='ru').translate(text)
+        return render_template('success.html', translated_text=translated_text)
+    else:
+        return render_template('success.html')
 
 if __name__ == '__main__':
     app.run(port=5000, host='127.0.0.1')

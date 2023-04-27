@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>You are successfully logged in as {{username}}!</h1>
+  <form method="POST" action="{{ url_for('translate') }}">
+    <label for="text">Enter text to translate:</label><br>
+    <textarea name="text" id="text" rows="5" cols="50"></textarea><br>
+    <input type="submit" value="Translate">
+  </form>
+  <br>
+  <div>
+    <p>Translated text:</p>
+    <p>{{ translated_text }}</p>
+  </div>
 {% endblock %}
