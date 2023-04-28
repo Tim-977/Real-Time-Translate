@@ -4,11 +4,19 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
+import hashing
 from data import db_session
 from data.users import User
 
-# FIXME:
-# ~~ Translator can't translate digits
+# TODO:
+# ~~ Add dockstrings
+# ~~ Replace styles from HTML with CSS file
+# ~~ Create README.MD
+# ~~ Create video presentation
+# ~~ Secret_key
+# ~~ Make C++ hashing
+# ~~ Password reset
+# ~~ Make username be visible
 
 app = Flask(__name__)
 
@@ -31,12 +39,6 @@ class RegisterForm(FlaskForm):
 def start():
     return redirect('/login')
 
-#@app.route("/session_test")
-#def session_test():
-#    visits_count = session.get('visits_count', 0)
-#    session['visits_count'] = visits_count + 1
-#    return make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global username
@@ -48,11 +50,8 @@ def login():
         # <user--check>
         db_session.global_init("db/blogs.db")
         db_sess = db_session.create_session()
-        #if db_sess.query(User).filter(User.name == username).all():
-        #    print(f'User already exists: {username}')
-        #    return render_template('login.html', title='Login Failed', form=form, message="Неверный пароль")
         user = db_sess.query(User).filter(User.name == username).first()
-        if user and user.password == password:
+        if user and user.password == hashing.myhash(password):
             # login successful
             return redirect('/success')
         else:
@@ -79,28 +78,19 @@ def register():
         # <--------db-------->
         user = User()
         user.name = username
-        user.password = password_1
+        user.password = hashing.myhash(password_1)
         db_sess.add(user)
         db_sess.commit()
         # <--------db-------->
-        #print(username, password_1, password_2)
         return redirect('/success')
-    #elif request.method == 'POST':
-    #    flash('Please correct the errors below.')
     return render_template('register.html', title='Authorisation', form=form)
-
-
-#@app.route('/success')
-#def success():
-#    return render_template('success.html', username=username)
 
 @app.route('/success', methods=['GET', 'POST'])
 def translate():
     if request.method == 'POST':
         text = str(request.form['text'])
-        #translated_text = text[::-1]
         if text.isdigit():
-            return render_template('success.html', message="Нельзя переводить только числа")
+            return render_template('success.html', message="You can't translate just numbers")
         translated_text = GoogleTranslator(source='auto', target='ru').translate(str(text))
         return render_template('success.html', translated_text=translated_text, original_text=str(text))
     else:
