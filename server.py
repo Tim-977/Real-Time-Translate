@@ -29,13 +29,13 @@ class RegisterForm(FlaskForm):
 
 @app.route('/')
 def start():
-    return redirect('/login')
+    return redirect('/success')
 
-@app.route("/session_test")
-def session_test():
-    visits_count = session.get('visits_count', 0)
-    session['visits_count'] = visits_count + 1
-    return make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
+#@app.route("/session_test")
+#def session_test():
+#    visits_count = session.get('visits_count', 0)
+#    session['visits_count'] = visits_count + 1
+#    return make_response(f"Вы пришли на эту страницу {visits_count + 1} раз")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,10 +97,12 @@ def register():
 @app.route('/success', methods=['GET', 'POST'])
 def translate():
     if request.method == 'POST':
-        text = request.form['text']
+        text = str(request.form['text'])
         #translated_text = text[::-1]
-        translated_text = GoogleTranslator(source='auto', target='ru').translate(text)
-        return render_template('success.html', translated_text=translated_text)
+        if text.isdigit():
+            return render_template('success.html', message="Нельзя переводить только числа")
+        translated_text = GoogleTranslator(source='auto', target='ru').translate(str(text))
+        return render_template('success.html', translated_text=translated_text, original_text=str(text))
     else:
         return render_template('success.html')
 

@@ -4,11 +4,28 @@
   <form method="POST" action="{{ url_for('translate') }}">
     <label for="text">Enter text to translate:</label><br>
     <textarea name="text" id="text" rows="5" cols="50"></textarea><br>
-    <input type="submit" value="Translate">
+    <input type="submit" value="Translate" style="margin-top: 5px;">
   </form>
   <br>
-  <div>
-    <p>Translated text:</p>
-    <p>{{ translated_text }}</p>
-  </div>
+  {% if message == 'Нельзя переводить только числа' %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+  {% else %}
+    </div>
+    <br>
+    <div>
+      <p>Original text:</p>
+      <p style="white-space: pre-line;">{{ original_text }}</p>
+    </div>
+    <div>
+      <p>Translated text:</p>
+      <p style="white-space: pre-line;">{{ translated_text }}</p>
+    </div>
+    <style>
+      div {
+        display: inline-block;
+        margin-right: 10px;
+      }
+    </style>
+  {% endif %}
 {% endblock %}
