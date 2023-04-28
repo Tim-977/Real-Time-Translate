@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 
 @app.route('/')
 def start():
-    return redirect('/success')
+    return redirect('/login')
 
 #@app.route("/session_test")
 #def session_test():
