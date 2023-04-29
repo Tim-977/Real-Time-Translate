@@ -17,6 +17,10 @@ from data.users import User
 # ~~ Make C++ hashing
 # ~~ Password reset
 # ~~ Make username be visible
+# ~~ Make Bootstrap panel redirect in login page
+
+# FIXME:
+# ~~ CSS file doesn't work
 
 app = Flask(__name__)
 
