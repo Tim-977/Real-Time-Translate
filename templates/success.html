@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <head>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-  </head>
   <form method="POST" action="{{ url_for('translate') }}">
     <label for="text">Enter text to translate:</label><br>
     <textarea name="text" id="text" rows="5" cols="50"></textarea><br>

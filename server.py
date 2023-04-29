@@ -9,11 +9,11 @@ from data import db_session
 from data.users import User
 
 # TODO:
-# ~~ Add dockstrings
+# ~~~~~~~ Add dockstrings
 # ~~ Replace styles from HTML with CSS file
-# ~~ Create README.MD
-# ~~ Create video presentation
-# ~~ Secret_key
+# ~~~~~~~ Create README.MD
+# ~~~~~~~ Create video presentation
+# ~~~~~~~ Secret_key
 # ~~ Make C++ hashing
 # ~~ Password reset
 # ~~ Make username be visible
@@ -24,7 +24,7 @@ from data.users import User
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+app.config['SECRET_KEY'] = 'Wd#9m!tR@2gG^6y'
 
 
 class LoginForm(FlaskForm):
