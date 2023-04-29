@@ -8,19 +8,6 @@ import hashing
 from data import db_session
 from data.users import User
 
-# TODO:
-# ~~~~~~~ Add dockstrings
-# ~~ Replace styles from HTML with CSS file
-# ~~~~~~~ Create README.MD
-# ~~~~~~~ Create video presentation
-# ~~~~~~~ Secret_key
-# ~~ Make C++ hashing
-# ~~ Password reset
-# ~~ Make username be visible
-# ~~ Make Bootstrap panel redirect in login page
-
-# FIXME:
-# ~~ CSS file doesn't work
 
 app = Flask(__name__)
 
