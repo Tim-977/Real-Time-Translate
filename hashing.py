@@ -41,6 +41,3 @@ def myhash(s):
         result += str(mainalg(s, i))
     
     return result
-
-#print(myhash('123') == myhash('123'))
-#print(myhash('123') == myhash('456'))
