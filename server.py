@@ -92,4 +92,6 @@ def translate():
 
 
 if __name__ == '__main__':
+    db_session.global_init('db/userdata.db')
+    db_sess = db_session.create_session()
     app.run(port=5000, host='127.0.0.1')
