@@ -30,6 +30,7 @@ class RegisterForm(FlaskForm):
 def start():
     return redirect('/login')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     global username
@@ -39,7 +40,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         # <user--check>
-        db_session.global_init("db/userdata.db")
+        db_session.global_init('db/userdata.db')
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.name == username).first()
         if user and user.password == hashing.myhash(password):
@@ -47,10 +48,11 @@ def login():
             return redirect('/translate')
         else:
             # login failed
-            return render_template('login.html', title='Login Failed', form=form, message="Неверный логин или пароль")
+            return render_template('login.html', title='Login Failed', form=form, message='Неверный логин или пароль')
         # </user--check>
         return redirect('/translate')
     return render_template('login.html', title='Authorisation', form=form)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -61,11 +63,11 @@ def register():
         username = request.form['username']
         password_1 = request.form['password_1']
         password_2 = request.form['password_2']
-        db_session.global_init("db/userdata.db")
+        db_session.global_init('db/userdata.db')
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.name == username).all():
             print(f'User already exists: {username}')
-            return render_template('register.html', title='Registration failed', form=form, message="Такой пользователь уже есть")
+            return render_template('register.html', title='Registration failed', form=form, message='Такой пользователь уже есть')
         # <--------db-------->
         user = User()
         user.name = username
@@ -76,16 +78,18 @@ def register():
         return redirect('/translate')
     return render_template('register.html', title='Authorisation', form=form)
 
+
 @app.route('/translate', methods=['GET', 'POST'])
 def translate():
     if request.method == 'POST':
-        text = str(request.form['text'])
+        text = request.form['text']
         if text.isdigit():
-            return render_template('translate.html', message="You can't translate just numbers")
-        translated_text = GoogleTranslator(source='auto', target='ru').translate(str(text))
+            return render_template('translate.html', message='You can\'t translate just numbers')
+        translated_text = GoogleTranslator(source='auto', target='en').translate(str(text))
         return render_template('translate.html', translated_text=translated_text, original_text=str(text))
     else:
         return render_template('translate.html')
+
 
 if __name__ == '__main__':
     app.run(port=5000, host='127.0.0.1')
